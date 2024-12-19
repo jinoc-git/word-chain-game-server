@@ -15,7 +15,7 @@ const app: Express = express();
 
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://word-chain-game-mocha.vercel.app'],
+    origin: ['http://localhost:3000', 'https://word-chain-game-server-gkzi.vercel.app'],
   }),
 );
 
