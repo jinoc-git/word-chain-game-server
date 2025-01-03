@@ -13,8 +13,9 @@ const server = createServer();
 
 const io = new Server(server, {
   cors: {
-    origin: ['https://word-chain-game-mocha.vercel.app'],
+    origin: 'https://word-chain-game-mocha.vercel.app',
     methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
     credentials: true,
   },
 });

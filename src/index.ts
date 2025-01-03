@@ -6,7 +6,8 @@ const app: Express = express();
 
 app.use(
   cors({
-    origin: ['https://word-chain-game-mocha.vercel.app'],
+    origin: 'https://word-chain-game-mocha.vercel.app',
+    allowedHeaders: '',
   }),
 );
 
