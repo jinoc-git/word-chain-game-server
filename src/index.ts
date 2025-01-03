@@ -4,7 +4,11 @@ import cors from 'cors';
 
 const app: Express = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ['https://word-chain-game-mocha.vercel.app'],
+  }),
+);
 
 const port = process.env.PORT || 5000;
 
