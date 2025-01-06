@@ -10,7 +10,7 @@ import { quitRoom } from '../utils/quitRoom';
 
 const rooms: Rooms = {};
 
-export const handleSocketIOEvemts = (io: Server) => {
+export const handleSocketIOEvents = (io: Server) => {
   io.on('connection', (socket) => {
     console.log('socket io connect');
 

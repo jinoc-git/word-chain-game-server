@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 
-import { handleSocketIOEvemts } from './api/socket';
+import { handleSocketIOEvents } from './api/socket';
 
 const app: Express = express();
 
@@ -20,7 +20,7 @@ const io = new Server(httpServer, {
   },
 });
 
-handleSocketIOEvemts(io);
+handleSocketIOEvents(io);
 
 const port = process.env.PORT || 5000;
 
