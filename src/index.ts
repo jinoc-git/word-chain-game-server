@@ -13,19 +13,14 @@ import { quitRoom } from './utils/quitRoom';
 
 const app: Express = express();
 
-app.use(
-  cors({
-    origin: 'https://word-chain-game-mocha.vercel.app',
-  }),
-);
+app.use(cors());
 
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
     origin: 'https://word-chain-game-mocha.vercel.app',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
+    // methods: ['GET', 'POST'],
     credentials: true,
   },
 });
