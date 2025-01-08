@@ -14,7 +14,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: 'https://word-chain-game-mocha.vercel.app',
-    methods: ['GET', 'POST'],
+    // methods: ['GET', 'POST'],
     allowedHeaders: ['Access-Control-Allow-Origin'],
     credentials: true,
   },
@@ -22,7 +22,7 @@ const io = new Server(httpServer, {
 
 handleSocketIOEvents(io);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 443;
 
 httpServer.listen(port, () => {
   console.log(`> Ready on port ${port}`);
