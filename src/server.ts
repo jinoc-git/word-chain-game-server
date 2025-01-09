@@ -20,7 +20,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'https://word-chain-game-mocha.vercel.app',
+    origin: ['https://word-chain-game-mocha.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
     credentials: true,
