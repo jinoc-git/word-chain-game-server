@@ -1,8 +1,0 @@
-{
-  "routes": [
-    {
-      "src": "/socket.io/*",
-      "dest": "/api/socket.ts"
-    }
-  ]
-}
