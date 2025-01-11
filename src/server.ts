@@ -27,70 +27,74 @@ const io = new Server(httpServer, {
   },
 });
 
-const rooms: Rooms = {};
+const main = async () => {
+  const rooms: Rooms = {};
 
-io.on('connection', (socket) => {
-  console.log('socket io connect');
+  io.on('connection', (socket) => {
+    console.log('socket io connect');
 
-  socket.on('createRoom', ({ roomId, userId, nickname }: CreateOrJoinSocketRoomArgs) => {
-    socket.join(roomId);
-
-    const isValidRoom = rooms[roomId] == undefined;
-    if (isValidRoom) {
-      const room: Room = {
-        state: false,
-        players: [{ socketId: socket.id, userId, nickname, isRoomChief: true }],
-      };
-      rooms[roomId] = room;
-      socket.emit('createRoomSuccess', rooms[roomId]);
-    } else {
-      socket.emit('createRoomFail', '잠시후 다시 시도해주세요.');
-    }
-  });
-
-  socket.on('joinRoom', ({ roomId, userId, nickname }: CreateOrJoinSocketRoomArgs) => {
-    const isValidRoom = rooms[roomId] != undefined;
-    if (isValidRoom) {
+    socket.on('createRoom', ({ roomId, userId, nickname }: CreateOrJoinSocketRoomArgs) => {
       socket.join(roomId);
-      rooms[roomId].players.push({
-        socketId: socket.id,
-        userId,
-        nickname,
-        isRoomChief: false,
-      });
-      socket.emit('joinRoomSuccess', rooms[roomId]);
-      socket.to(roomId).emit('updateUser', rooms[roomId]);
-    } else {
-      socket.emit('joinRoomFail', '방 코드를 확인해주세요.');
-    }
-  });
 
-  socket.on('quitGame', ({ roomId, userId }: QuitGameArgs) => {
-    const afterUsers = quitRoom(userId, rooms[roomId].players);
-    if (afterUsers.length === 0) delete rooms[roomId];
-    else {
-      rooms[roomId].players = afterUsers;
-      socket.to(roomId).emit('updateUser', rooms[roomId]);
-    }
-  });
-
-  socket.on('handleGameState', ({ userId, roomId, state }: HandleGameStateSocketArgs) => {
-    const player = rooms[roomId].players.find((player) => player.userId === userId);
-    if (!player) socket.emit('handleGameStateFail', '방 오류 발생!');
-    else {
-      const isRoomChief = player.isRoomChief === true;
-      if (!isRoomChief) socket.emit('handleGameStateFail', '방장이 아닙니다!');
-      else {
-        rooms[roomId].state = state;
-        socket.emit('handleGameStateSuccess', `game state is ${state}`);
-        socket.to(roomId).emit('gameStateIsChange', { gameState: state });
+      const isValidRoom = rooms[roomId] == undefined;
+      if (isValidRoom) {
+        const room: Room = {
+          state: false,
+          players: [{ socketId: socket.id, userId, nickname, isRoomChief: true }],
+        };
+        rooms[roomId] = room;
+        socket.emit('createRoomSuccess', rooms[roomId]);
+      } else {
+        socket.emit('createRoomFail', '잠시후 다시 시도해주세요.');
       }
-    }
-  });
-});
+    });
 
-httpServer.listen(process.env.PORT || 443, () => {
-  console.log(`> Ready on port 443`);
-});
+    socket.on('joinRoom', ({ roomId, userId, nickname }: CreateOrJoinSocketRoomArgs) => {
+      const isValidRoom = rooms[roomId] != undefined;
+      if (isValidRoom) {
+        socket.join(roomId);
+        rooms[roomId].players.push({
+          socketId: socket.id,
+          userId,
+          nickname,
+          isRoomChief: false,
+        });
+        socket.emit('joinRoomSuccess', rooms[roomId]);
+        socket.to(roomId).emit('updateUser', rooms[roomId]);
+      } else {
+        socket.emit('joinRoomFail', '방 코드를 확인해주세요.');
+      }
+    });
+
+    socket.on('quitGame', ({ roomId, userId }: QuitGameArgs) => {
+      const afterUsers = quitRoom(userId, rooms[roomId].players);
+      if (afterUsers.length === 0) delete rooms[roomId];
+      else {
+        rooms[roomId].players = afterUsers;
+        socket.to(roomId).emit('updateUser', rooms[roomId]);
+      }
+    });
+
+    socket.on('handleGameState', ({ userId, roomId, state }: HandleGameStateSocketArgs) => {
+      const player = rooms[roomId].players.find((player) => player.userId === userId);
+      if (!player) socket.emit('handleGameStateFail', '방 오류 발생!');
+      else {
+        const isRoomChief = player.isRoomChief === true;
+        if (!isRoomChief) socket.emit('handleGameStateFail', '방장이 아닙니다!');
+        else {
+          rooms[roomId].state = state;
+          socket.emit('handleGameStateSuccess', `game state is ${state}`);
+          socket.to(roomId).emit('gameStateIsChange', { gameState: state });
+        }
+      }
+    });
+  });
+
+  httpServer.listen(process.env.PORT || 443, () => {
+    console.log(`> Ready on port 443`);
+  });
+};
+
+main();
 
 module.exports = app;
